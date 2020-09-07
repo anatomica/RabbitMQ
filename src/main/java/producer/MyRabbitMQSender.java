@@ -4,7 +4,6 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
-
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
@@ -16,17 +15,23 @@ public class MyRabbitMQSender {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Scanner scanner = new Scanner(System.in);
-
         System.out.println("Введите название публикуемого канала: \"practice.java\" или \"theory.java\"");
         System.out.println("Для смены канала введите: \"/change 'и имя канала'\"");
-        String chanelName = scanner.nextLine();
+        String chanelName;
+        String msg;
 
         while (true){
-            String msg = scanner.nextLine();
+            while (true) {
+                 msg = scanner.nextLine();
+                 if (!msg.equals("") && msg != null) break;
+                 System.out.println("Введите название публикуемого канала: \"practice.java\" или \"theory.java\"");
+            }
+            chanelName = msg;
             if (msg.equals("exit") || msg.equals("quit")) break;
             if (msg.startsWith("/change ")){
                 chanelName = msg.split(" ", 2)[1]; // change chanel
             }
+
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost("localhost");
             try (Connection connection = factory.newConnection();
@@ -45,8 +50,6 @@ public class MyRabbitMQSender {
                     System.out.println(" [x] Sent '" + routingKey + "':'" + message + "'");
                     message.delete(0, message.length()).append("message");
                 }
-
-                System.out.println("Введите название публикуемого канала: \"practice.java\" или \"theory.java\"");
                 System.out.println("Для смены канала введите: \"/change 'и имя канала'\"");
             }
         }

@@ -13,13 +13,18 @@ public class MyRabbitMQReceiver {
 
     public static void main(String[] args) throws IOException, TimeoutException {
         Scanner scanner = new Scanner(System.in);
-
         System.out.println("Введите название желаемого канала: \"practice.java\" или \"theory.java\"");
         System.out.println("Для смены канала введите: \"/change 'и имя канала'\"");
-        String chanelName = scanner.nextLine();
+        String chanelName;
+        String msg;
 
         while (true){
-            String msg = scanner.nextLine();
+            while (true) {
+                msg = scanner.nextLine();
+                if (!msg.equals("") && msg != null) break;
+                System.out.println("Введите название желаемого канала: \"practice.java\" или \"theory.java\"");
+            }
+            chanelName = msg;
             if (msg.equals("exit") || msg.equals("quit")) break;
             if (msg.startsWith("/change ")){
                 chanelName = msg.split(" ", 2)[1]; // change chanel
